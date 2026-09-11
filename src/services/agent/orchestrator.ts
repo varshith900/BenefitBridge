@@ -145,15 +145,21 @@ export class AgentOrchestrator {
 
       // Check if Gemini API is configured
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      const isGeminiAvailable = !!apiKey && apiKey.startsWith('AIzaSy');
+      const isGeminiAvailable = !!apiKey && apiKey.length > 20;
 
-      if (isGeminiAvailable) {
-        try {
-          const genAI = new GoogleGenerativeAI(apiKey);
-          const model = genAI.getGenerativeModel({
-            model: 'gemini-1.5-flash',
-            tools: [{ functionDeclarations: TOOLS as any }],
-          });
+      if (!isGeminiAvailable) {
+        await this.logAction('ERROR', "I am currently running in Offline Mode because a valid Gemini API Key is missing from the environment configuration (`VITE_GEMINI_API_KEY`). Please add a valid API key to your `.env.local` file to enable my full AI reasoning capabilities.");
+        await updateAgentSession(this.uid, { status: 'IDLE' });
+        this.session.status = 'IDLE';
+        return;
+      }
+
+      try {
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({
+          model: 'gemini-1.5-pro',
+          tools: [{ functionDeclarations: TOOLS as any }],
+        });
 
         const chat = model.startChat({
           systemInstruction: { role: 'system', parts: [{ text: SYSTEM_INSTRUCTION }] },
