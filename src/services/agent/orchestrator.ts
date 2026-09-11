@@ -52,10 +52,9 @@ export class AgentOrchestrator {
 
       // Check if Gemini API is configured
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      const isGeminiAvailable = !!apiKey && apiKey.length > 20;
-
-      if (!isGeminiAvailable) {
-        await this.logAction('ERROR', "I am currently running in Offline Mode because a valid Gemini API Key is missing from the environment configuration (`VITE_GEMINI_API_KEY`). Please add a valid API key to your `.env.local` file to enable my full AI reasoning capabilities.");
+      
+      if (!apiKey || !apiKey.startsWith('AIza')) {
+        await this.logAction('ERROR', "AI Engine Offline: The API key provided in your `.env.local` file is invalid. Google AI Studio keys must start with 'AIza'. The current key is causing a '404 Model Not Found' error. Please get a free API key from aistudio.google.com and update your .env.local file.");
         await updateAgentSession(this.uid, { status: 'IDLE' });
         this.session.status = 'IDLE';
         return;
@@ -64,7 +63,7 @@ export class AgentOrchestrator {
       try {
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-          model: 'gemini-1.5-pro',
+          model: 'gemini-1.5-flash',
           tools: [{ functionDeclarations: TOOLS as any }],
         });
 
