@@ -1,5 +1,5 @@
 import { collection, query, where, getDocs, addDoc, doc, deleteDoc } from 'firebase/firestore';
-import { ref, deleteObject } from 'firebase/storage';
+import { ref, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../lib/firebase';
 import type { DocumentMetadata } from '../types/document';
 
@@ -24,10 +24,24 @@ export async function uploadRealDocument(uid: string, type: string, file: File):
     throw new Error('File size exceeds the 10MB limit. Please upload a smaller file.');
   }
 
-  // Bypass Firebase Storage to avoid hanging if it is not enabled in the user's project
-  const downloadURL = "";
+  // Generate a unique path for the file in the user's secure folder
+  const storagePath = `documents/${uid}/${Date.now()}_${file.name}`;
+  const fileRef = ref(storage, storagePath);
+  
+  // Upload to Firebase Storage with a 15-second timeout to prevent infinite buffering
+  let downloadURL = "";
+  try {
+    const uploadTask = uploadBytes(fileRef, file);
+    const timeoutTask = new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Storage timeout")), 15000));
+    
+    const snapshot = await Promise.race([uploadTask, timeoutTask]) as any;
+    downloadURL = await getDownloadURL(snapshot.ref);
+  } catch (err: any) {
+    console.warn("Firebase Storage upload failed or timed out. Bypassing upload to unblock UI.", err);
+    // Continue with an empty download URL so the user can still proceed
+  }
 
-  // 2. Save metadata to Firestore
+  // Save metadata to Firestore
   const metadata: Omit<DocumentMetadata, 'id'> = {
     uid,
     type,

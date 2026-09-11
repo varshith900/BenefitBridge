@@ -134,23 +134,26 @@ export function Landing() {
       <main className="relative">
         {/* HERO SECTION */}
         <section className="relative pt-40 pb-24 lg:pt-48 lg:pb-32 overflow-hidden">
-          <motion.div style={{ y, opacity }} className="absolute inset-0 bg-mesh opacity-40 dark:opacity-20 pointer-events-none" />
+          <motion.div style={{ y, opacity }} className="absolute inset-0 bg-mesh opacity-40 dark:opacity-20 pointer-events-none animate-blob" />
           
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="text-center max-w-4xl mx-auto mb-16 relative z-10">
               <Reveal delay={0.25} direction="up">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-medium text-sm mb-8 border border-emerald-200 dark:border-emerald-800/50 shadow-sm">
-                  <Sparkles className="w-4 h-4" />
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-medium text-sm mb-8 border border-emerald-200 dark:border-emerald-800/50 shadow-sm hover:scale-105 transition-transform duration-300">
+                  <Sparkles className="w-4 h-4 animate-pulse" />
                   <span>Comprehensive Benefits Discovery</span>
                 </div>
               </Reveal>
               
-              <Reveal delay={0.4} direction="up">
-                <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight font-heading leading-tight text-slate-900 dark:text-white">
-                  Claim your scholarships & <br className="hidden md:block" />
-                  benefits with <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-400">zero friction.</span>
-                </h1>
-              </Reveal>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3, ease: [0.215, 0.61, 0.355, 1] }}
+                className="text-5xl md:text-7xl font-bold mb-8 tracking-tight font-heading leading-tight text-slate-900 dark:text-white"
+              >
+                Claim your scholarships & <br className="hidden md:block" />
+                benefits with <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-400 animate-pulse">zero friction.</span>
+              </motion.h1>
 
               <Reveal delay={0.55} direction="up">
                 <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -195,35 +198,47 @@ export function Landing() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
                 {/* Step 1 */}
                 <Reveal delay={0.1}>
-                  <div className="text-center relative bg-white dark:bg-slate-900 p-8 rounded-3xl group hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-900/5 dark:hover:bg-slate-800/80 border border-transparent dark:hover:border-slate-700">
+                  <motion.div 
+                    whileHover={{ y: -12, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="text-center relative bg-white dark:bg-slate-900 p-8 rounded-3xl group hover:shadow-2xl hover:shadow-emerald-900/10 dark:hover:bg-slate-800/80 border border-transparent dark:hover:border-slate-700 h-full"
+                  >
                     <div className="w-24 h-24 mx-auto bg-emerald-50 dark:bg-emerald-900/20 border-4 border-white dark:border-slate-900 rounded-full flex items-center justify-center mb-6 shadow-md group-hover:scale-110 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40 transition-all duration-500">
-                      <Target className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+                      <Target className="w-10 h-10 text-emerald-600 dark:text-emerald-400 group-hover:animate-pulse" />
                     </div>
                     <h3 className="text-2xl font-bold mb-3 font-heading">1. Discover</h3>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed">Build your profile and instantly match with thousands of scholarships, subsidies, and government schemes.</p>
-                  </div>
+                  </motion.div>
                 </Reveal>
 
                 {/* Step 2 */}
                 <Reveal delay={0.2}>
-                  <div className="text-center relative bg-white dark:bg-slate-900 p-8 rounded-3xl group hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-900/5 dark:hover:bg-slate-800/80 border border-transparent dark:hover:border-slate-700">
+                  <motion.div 
+                    whileHover={{ y: -12, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="text-center relative bg-white dark:bg-slate-900 p-8 rounded-3xl group hover:shadow-2xl hover:shadow-emerald-900/10 dark:hover:bg-slate-800/80 border border-transparent dark:hover:border-slate-700 h-full"
+                  >
                     <div className="w-24 h-24 mx-auto bg-emerald-50 dark:bg-emerald-900/20 border-4 border-white dark:border-slate-900 rounded-full flex items-center justify-center mb-6 shadow-md group-hover:scale-110 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40 transition-all duration-500">
-                      <FileText className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+                      <FileText className="w-10 h-10 text-emerald-600 dark:text-emerald-400 group-hover:animate-pulse" />
                     </div>
                     <h3 className="text-2xl font-bold mb-3 font-heading">2. Prepare</h3>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed">Upload your documents to the secure vault. Our intelligence automatically extracts data and fills out forms.</p>
-                  </div>
+                  </motion.div>
                 </Reveal>
 
                 {/* Step 3 */}
                 <Reveal delay={0.3}>
-                  <div className="text-center relative bg-white dark:bg-slate-900 p-8 rounded-3xl group hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-900/5 dark:hover:bg-slate-800/80 border border-transparent dark:hover:border-slate-700">
+                  <motion.div 
+                    whileHover={{ y: -12, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="text-center relative bg-white dark:bg-slate-900 p-8 rounded-3xl group hover:shadow-2xl hover:shadow-emerald-900/10 dark:hover:bg-slate-800/80 border border-transparent dark:hover:border-slate-700 h-full"
+                  >
                     <div className="w-24 h-24 mx-auto bg-emerald-50 dark:bg-emerald-900/20 border-4 border-white dark:border-slate-900 rounded-full flex items-center justify-center mb-6 shadow-md group-hover:scale-110 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40 transition-all duration-500">
-                      <CheckCircle2 className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+                      <CheckCircle2 className="w-10 h-10 text-emerald-600 dark:text-emerald-400 group-hover:animate-pulse" />
                     </div>
                     <h3 className="text-2xl font-bold mb-3 font-heading">3. Track</h3>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed">Manage all your applications from a single dashboard. Get notified about deadlines and missing requirements.</p>
-                  </div>
+                  </motion.div>
                 </Reveal>
               </div>
             </div>

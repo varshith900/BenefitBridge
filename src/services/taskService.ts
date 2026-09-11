@@ -94,7 +94,8 @@ export async function createTask(uid: string, data: CreateTaskInput): Promise<Ta
     if (data.actionPayload) newTask.actionPayload = data.actionPayload;
     if (data.dueDate) newTask.dueDate = data.dueDate;
 
-  await setDoc(doc(db, TASKS_COLLECTION, taskId), newTask);
+  const cleanTask = JSON.parse(JSON.stringify(newTask));
+  await setDoc(doc(db, TASKS_COLLECTION, taskId), cleanTask);
   return newTask;
 }
 
@@ -115,10 +116,11 @@ export async function updateTaskStatus(
 }
 
 export async function updateTask(taskId: string, updates: Partial<Task>): Promise<void> {
-  await updateDoc(doc(db, TASKS_COLLECTION, taskId), {
+  const cleanUpdates = JSON.parse(JSON.stringify({
     ...updates,
     updatedAt: Date.now(),
-  });
+  }));
+  await updateDoc(doc(db, TASKS_COLLECTION, taskId), cleanUpdates);
 }
 
 // ─── Agent-Driven Task Generation ─────────────────────────────────────────────

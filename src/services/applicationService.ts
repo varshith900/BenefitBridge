@@ -286,8 +286,8 @@ export async function createApplication(
   app.healthAction = health.healthAction;
   app.nextAction = computeNextAction(app);
 
-  // Clean undefined from health stats if any
-  const cleanApp = Object.fromEntries(Object.entries(app).filter(([_, v]) => v !== undefined));
+  // Deep clean undefined to prevent Firebase crashes
+  const cleanApp = JSON.parse(JSON.stringify(app));
 
   await setDoc(doc(db, COLLECTION, id), cleanApp);
 
@@ -400,7 +400,8 @@ export async function transitionApplication(
   updates.healthAction = health.healthAction;
   updates.nextAction = computeNextAction(merged);
 
-  await updateDoc(doc(db, COLLECTION, applicationId), updates);
+  const cleanUpdates = JSON.parse(JSON.stringify(updates));
+  await updateDoc(doc(db, COLLECTION, applicationId), cleanUpdates);
   return { ...merged, ...updates } as Application;
 }
 

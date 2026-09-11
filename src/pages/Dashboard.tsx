@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +20,19 @@ import type { Task } from '../types/task';
 import { PRIORITY_COLORS } from '../types/task';
 import { Layout } from '../components/Layout';
 import { cn } from '../lib/utils';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } }
+};
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -211,40 +225,48 @@ export function Dashboard() {
       <div className="flex flex-col lg:flex-row gap-8 h-full max-w-7xl mx-auto">
         
         {/* LEFT COLUMN: CRITICAL CONTEXT & ACTIONS */}
-        <div className="w-full lg:w-1/3 flex flex-col gap-6">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="w-full lg:w-1/3 flex flex-col gap-6"
+        >
           
           {/* Top Priority Action Card */}
           {topAction && (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-                  Top Recommended Benefit
-                </span>
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                  {topAction.result.confidenceLevel} Match
-                </span>
+            <motion.div variants={itemVariants} className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent dark:from-emerald-900/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 group-hover:animate-pulse">
+                    Top Recommended Benefit
+                  </span>
+                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                    {topAction.result.confidenceLevel} Match
+                  </span>
+                </div>
+                <h3 className="font-bold text-base text-slate-900 dark:text-white mb-1 leading-snug group-hover:text-emerald-600 transition-colors">
+                  {topAction.benefit.title}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                  {topAction.benefit.issuer} · {topAction.benefit.benefitAmount}
+                </p>
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <span className="text-xs text-slate-500">Deadline: {topAction.benefit.deadline}</span>
+                  <Button size="sm" onClick={() => navigate('/opportunities')} className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs hover:-translate-y-0.5 transition-transform shadow-md hover:shadow-emerald-500/20">
+                    Review & Apply <ArrowRight className="w-3 h-3 ml-1" />
+                  </Button>
+                </div>
               </div>
-              <h3 className="font-bold text-base text-slate-900 dark:text-white mb-1 leading-snug">
-                {topAction.benefit.title}
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                {topAction.benefit.issuer} · {topAction.benefit.benefitAmount}
-              </p>
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-xs text-slate-500">Deadline: {topAction.benefit.deadline}</span>
-                <Button size="sm" onClick={() => navigate('/opportunities')} className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs">
-                  Review & Apply <ArrowRight className="w-3 h-3 ml-1" />
-                </Button>
-              </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Top Pending Task Card */}
           {topTask && (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <motion.div variants={itemVariants} className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all duration-300 group">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <ListTodo className="w-4 h-4 text-slate-400" />
+                  <ListTodo className="w-4 h-4 text-slate-400 group-hover:text-blue-500 transition-colors" />
                   <span className="text-xs font-bold text-slate-700 dark:text-slate-300">High-Priority Task</span>
                 </div>
                 <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded uppercase", PRIORITY_COLORS[topTask.priority])}>
@@ -253,15 +275,15 @@ export function Dashboard() {
               </div>
               <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">{topTask.title}</p>
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{topTask.description}</p>
-              <Button size="sm" variant="outline" onClick={() => navigate('/tasks')} className="w-full text-xs">
+              <Button size="sm" variant="outline" onClick={() => navigate('/tasks')} className="w-full text-xs hover:border-blue-500 hover:text-blue-600 transition-colors">
                 Open Tasks Workspace
               </Button>
-            </div>
+            </motion.div>
           )}
 
           {/* Upcoming Renewals */}
           {upcomingRenewals.length > 0 && (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <motion.div variants={itemVariants} className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                   <Activity className="w-4 h-4 text-emerald-500" /> Upcoming Renewals
@@ -270,40 +292,80 @@ export function Dashboard() {
               </div>
               <div className="space-y-3">
                 {upcomingRenewals.map(app => (
-                  <div key={app.id} className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-emerald-300 transition-colors" onClick={() => navigate('/applications')}>
+                  <div key={app.id} className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-emerald-300 transition-all hover:-translate-y-0.5 hover:shadow-sm" onClick={() => navigate('/applications')}>
                     <div className="flex justify-between items-start mb-1">
-                      <span className="text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded">{app.renewalStatus.replace('_', ' ')}</span>
+                      <span className={cn(
+                        "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border shadow-sm dark:shadow-none",
+                        app.renewalStatus === 'UPCOMING' ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/50 dark:text-amber-300 dark:border-amber-800" :
+                        app.renewalStatus === 'OPEN' ? "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/50 dark:text-red-300 dark:border-red-800" :
+                        "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+                      )}>
+                        {app.renewalStatus.replace('_', ' ')}
+                      </span>
                       <span className="text-xs text-slate-500 font-medium">Due: {app.renewalDeadline || 'Upcoming'}</span>
+                    </div>
+                    {/* Visual Urgency Timeline Bar */}
+                    <div className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-full mt-2 mb-2 overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: app.renewalStatus === 'OPEN' ? '100%' : app.renewalStatus === 'UPCOMING' ? '85%' : '30%' }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        className={cn("h-full", app.renewalStatus === 'OPEN' ? 'bg-red-500 animate-pulse' : app.renewalStatus === 'UPCOMING' ? 'bg-amber-500' : 'bg-emerald-500')} 
+                      />
                     </div>
                     <p className="text-sm font-bold text-slate-900 dark:text-white">{app.benefitTitle}</p>
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Quick Stats Overview */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm mt-auto">
+          <motion.div variants={itemVariants} className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm mt-auto group hover:shadow-lg transition-shadow">
              <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">At a Glance</span>
              </div>
-             <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-emerald-300 transition-colors" onClick={() => navigate('/applications')}>
-                   <div className="text-xl font-black text-slate-900 dark:text-white mb-1">{stats.apps}</div>
-                   <div className="text-[10px] font-bold text-slate-500 uppercase">Tracked</div>
+             
+             {/* Profile Completeness Ring */}
+             <div className="flex items-center gap-4 mb-4 p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-emerald-300 transition-colors" onClick={() => navigate('/profile')}>
+                <div className="relative w-12 h-12 flex-shrink-0">
+                  <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+                    <path className="text-slate-200 dark:text-slate-800 stroke-current" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <motion.path 
+                      className="text-emerald-500 stroke-current" 
+                      strokeWidth="3" 
+                      strokeLinecap="round"
+                      fill="none" 
+                      strokeDasharray={`${stats.profileDone}, 100`}
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
+                      initial={{ strokeDasharray: "0, 100" }}
+                      animate={{ strokeDasharray: `${stats.profileDone}, 100` }}
+                      transition={{ duration: 1.5, ease: "easeOut" }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300">{stats.profileDone}%</span>
+                  </div>
                 </div>
-                <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-emerald-300 transition-colors" onClick={() => navigate('/vault')}>
-                   <div className="text-xl font-black text-slate-900 dark:text-white mb-1">{stats.docs}</div>
-                   <div className="text-[10px] font-bold text-slate-500 uppercase">Documents</div>
-                </div>
-                <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-emerald-300 transition-colors" onClick={() => navigate('/profile')}>
-                   <div className="text-xl font-black text-emerald-600 dark:text-emerald-400 mb-1">{stats.profileDone}%</div>
-                   <div className="text-[10px] font-bold text-slate-500 uppercase">Profile</div>
+                <div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white">Profile Completeness</div>
+                  <div className="text-[10px] text-slate-500">Complete it to unlock more matches.</div>
                 </div>
              </div>
-          </div>
 
-        </div>
+             <div className="grid grid-cols-2 gap-2 text-center">
+                <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-emerald-300 transition-colors hover:-translate-y-0.5" onClick={() => navigate('/applications')}>
+                   <div className="text-xl font-black text-slate-900 dark:text-white mb-1 group-hover:scale-110 transition-transform">{stats.apps}</div>
+                   <div className="text-[10px] font-bold text-slate-500 uppercase">Tracked</div>
+                </div>
+                <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-emerald-300 transition-colors hover:-translate-y-0.5" onClick={() => navigate('/vault')}>
+                   <div className="text-xl font-black text-slate-900 dark:text-white mb-1 group-hover:scale-110 transition-transform">{stats.docs}</div>
+                   <div className="text-[10px] font-bold text-slate-500 uppercase">Documents</div>
+                </div>
+             </div>
+          </motion.div>
+
+        </motion.div>
 
         {/* RIGHT COLUMN: AGENT WORKSPACE */}
         <div className="w-full lg:w-2/3 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden relative">

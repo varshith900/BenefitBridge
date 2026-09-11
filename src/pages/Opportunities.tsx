@@ -62,19 +62,40 @@ function ReadinessBadge({ readiness }: { readiness: RankedOpportunity['applicati
   );
 }
 
-function PriorityBar({ score, label }: { score: number; label: RankedOpportunity['priorityLabel'] }) {
+function MatchScoreRing({ score, label }: { score: number; label: RankedOpportunity['priorityLabel'] }) {
   const max = 2000;
   const pct = Math.min(100, Math.round((score / max) * 100));
-  const color = label === 'Urgent' ? 'bg-red-500' : label === 'High' ? 'bg-amber-500' : label === 'Medium' ? 'bg-blue-400' : 'bg-slate-300 dark:bg-slate-700';
+  
+  let colorClass = 'text-slate-300 dark:text-slate-700';
+  if (label === 'Urgent') colorClass = 'text-red-500';
+  else if (label === 'High') colorClass = 'text-amber-500';
+  else if (label === 'Medium') colorClass = 'text-blue-500';
+
   return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-[10px] font-semibold text-slate-500 dark:text-slate-400">
-        <span className="uppercase tracking-wider">{label} Priority</span>
-        <span>{pct}%</span>
+    <div className="flex flex-col items-center justify-center space-y-1">
+      <div className="relative w-16 h-16 group">
+        {/* Glow effect on hover */}
+        <div className={cn("absolute inset-0 rounded-full blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-500 bg-current", colorClass)}></div>
+        
+        <svg className="w-16 h-16 transform -rotate-90 relative z-10" viewBox="0 0 36 36">
+          <path className="text-slate-100 dark:text-slate-800/50 stroke-current" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          <motion.path 
+            className={cn("stroke-current", colorClass)}
+            strokeWidth="3" 
+            strokeLinecap="round"
+            fill="none" 
+            strokeDasharray={`${pct}, 100`}
+            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
+            initial={{ strokeDasharray: "0, 100" }}
+            animate={{ strokeDasharray: `${pct}, 100` }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-sm font-black text-slate-900 dark:text-white">{pct}%</span>
+        </div>
       </div>
-      <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-        <div className={cn('h-full rounded-full transition-all', color)} style={{ width: `${pct}%` }} />
-      </div>
+      <span className={cn("text-[9px] font-bold uppercase tracking-wider", colorClass)}>{label} Match</span>
     </div>
   );
 }
@@ -220,13 +241,16 @@ export function Opportunities() {
                 key={f}
                 onClick={() => setFilter(f as any)}
                 className={cn(
-                  "flex-1 md:flex-none px-4 py-1.5 rounded-lg text-sm font-medium transition-all",
+                  "flex-1 md:flex-none px-4 py-1.5 rounded-lg text-sm font-medium transition-colors relative",
                   filter === f
-                    ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm dark:shadow-none"
-                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
+                    ? "text-slate-900 dark:text-white"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
                 )}
               >
-                {f}
+                {filter === f && (
+                  <motion.div layoutId="statusFilter" className="absolute inset-0 bg-white dark:bg-slate-800 rounded-lg shadow-sm dark:shadow-none z-0" />
+                )}
+                <span className="relative z-10">{f}</span>
               </button>
             ))}
           </div>
@@ -237,13 +261,16 @@ export function Opportunities() {
                 key={s}
                 onClick={() => setSectorFilter(s)}
                 className={cn(
-                  "whitespace-nowrap px-4 py-1.5 rounded-lg text-sm font-medium transition-all",
+                  "whitespace-nowrap px-4 py-1.5 rounded-lg text-sm font-medium transition-colors relative",
                   sectorFilter === s
-                    ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm dark:shadow-none"
-                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
+                    ? "text-slate-900 dark:text-white"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
                 )}
               >
-                {s}
+                {sectorFilter === s && (
+                  <motion.div layoutId="sectorFilter" className="absolute inset-0 bg-white dark:bg-slate-800 rounded-lg shadow-sm dark:shadow-none z-0" />
+                )}
+                <span className="relative z-10">{s}</span>
               </button>
             ))}
           </div>
@@ -265,18 +292,18 @@ export function Opportunities() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
               className={cn(
-                "bg-white dark:bg-slate-900 rounded-2xl p-5 md:p-6 shadow-sm dark:shadow-none border transition-all",
+                "bg-white dark:bg-slate-900 rounded-2xl p-5 md:p-6 shadow-sm dark:shadow-none border transition-all relative overflow-hidden group hover:-translate-y-1 hover:shadow-xl",
                 opp.result.status === 'Not Eligible' ? 'border-slate-200 dark:border-slate-800 opacity-75' : 'border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700/50'
               )}
             >
-              <div className="flex flex-col md:flex-row md:items-start gap-5">
-                <div className="md:w-[120px] shrink-0 space-y-3">
-                  <div className="flex md:flex-col gap-3 md:gap-2 items-center md:items-start">
-                    <div className="text-4xl font-black text-slate-200 dark:text-slate-800 leading-none font-heading">#{opp.rank}</div>
-                    <div className="flex-1 md:w-full">
-                      <PriorityBar score={opp.priorityScore} label={opp.priorityLabel} />
-                    </div>
-                  </div>
+              {/* Spotlight Glow */}
+              {opp.result.status !== 'Not Eligible' && (
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent dark:from-emerald-900/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
+              )}
+              <div className="flex flex-col md:flex-row md:items-start gap-5 relative z-10">
+                <div className="md:w-[120px] shrink-0 space-y-3 flex flex-col items-center justify-center">
+                  <div className="text-4xl font-black text-slate-200 dark:text-slate-800 leading-none font-heading mb-2">#{opp.rank}</div>
+                  <MatchScoreRing score={opp.priorityScore} label={opp.priorityLabel} />
                 </div>
 
                 <div className="flex-1 min-w-0 space-y-3">

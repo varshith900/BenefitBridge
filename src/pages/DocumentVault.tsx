@@ -7,10 +7,7 @@ import { INDIAN_DOCUMENT_TYPES } from '../data/documentTypes';
 import type { DocumentMetadata } from '../types/document';
 import { logActivity } from '../services/activityService';
 import { Layout } from '../components/Layout';
-import { 
-  ShieldCheck, Upload, FileText, CheckCircle2, 
-  Search, Loader2, FolderLock, AlertTriangle, Trash2
-} from 'lucide-react';
+import { Search, Upload, FileText, CheckCircle2, ShieldCheck, Trash2, AlertTriangle, FolderLock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
 
@@ -113,8 +110,26 @@ const { user } = useAuth();
   if (loading) {
     return (
       <Layout>
-        <div className="h-full flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        <div className="w-full space-y-8 pb-12 animate-pulse">
+          {/* Skeleton Header */}
+          <div className="bg-slate-200 dark:bg-slate-800 rounded-2xl h-32 w-full"></div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Skeleton Left Column (Upload form) */}
+            <div className="md:col-span-1 space-y-6">
+              <div className="bg-slate-200 dark:bg-slate-800 rounded-2xl h-96 w-full"></div>
+            </div>
+            
+            {/* Skeleton Right Column (Vault) */}
+            <div className="md:col-span-2 space-y-6">
+              <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-1/4 mb-6"></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="bg-slate-200 dark:bg-slate-800 rounded-2xl h-40 w-full"></div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </Layout>
     );
@@ -259,14 +274,19 @@ const { user } = useAuth();
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: i * 0.05 }}
-                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm dark:shadow-none hover:shadow-md transition-shadow group"
+                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm dark:shadow-none hover:shadow-xl hover:-translate-y-1 transition-all group"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="bg-blue-50 p-3 rounded-xl group-hover:bg-blue-100 transition-colors">
                           <FileText className="w-6 h-6 text-blue-600" />
                         </div>
-                        <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] px-2 py-1 rounded-md font-bold uppercase tracking-wider flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3" /> Verified</span>
+                        <span className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-[10px] px-2 py-1 rounded-md font-bold uppercase tracking-wider flex items-center gap-1 group-hover:scale-105 transition-transform shadow-sm">
+                          <span className="relative flex h-2 w-2 mr-0.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                          </span>
+                          Verified
+                        </span>
                       </div>
                       
                       <h3 className="font-bold text-slate-900 dark:text-white mb-1 truncate" title={doc.type}>{doc.type}</h3>
