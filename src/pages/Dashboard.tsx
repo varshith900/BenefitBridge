@@ -8,7 +8,7 @@ import { AgentOrchestrator } from '../services/agent/orchestrator';
 import { getAgentSession, createOrResetAgentSession, updateAgentSession, subscribeToAgentSession } from '../services/agentMemory';
 import type { AgentSession, AgentAction } from '../types/agent';
 import { Logo } from '../components/Logo';
-import { AlertTriangle, Send, Loader2, Settings, CheckCircle2, ArrowRight, Activity, ListTodo, RotateCcw } from 'lucide-react';
+import { AlertTriangle, Send, Loader2, CheckCircle2, ArrowRight, Activity, ListTodo, RotateCcw } from 'lucide-react';
 import { getTopPriorityAction } from '../services/prioritizationEngine';
 import type { RankedOpportunity } from '../services/prioritizationEngine';
 import { getTopPriorityTask } from '../services/taskService';
@@ -171,11 +171,13 @@ export function Dashboard() {
   const renderAction = (action: AgentAction) => {
     switch (action.type) {
       case 'MESSAGE': {
-        const isUserMsg = action.content.startsWith('Help me') || 
+        const isUserMsg = action.role === 'USER' || (action.role === undefined && (
+          action.content.startsWith('Help me') || 
           action.content.toLowerCase().startsWith('what') || 
           action.content.toLowerCase().startsWith('do i') || 
           action.content.toLowerCase().startsWith('check') || 
-          action.content.toLowerCase().startsWith('how');
+          action.content.toLowerCase().startsWith('how')
+        ));
         
         return (
           <div key={action.id} className={`flex gap-3 my-4 animate-fade-in-up ${isUserMsg ? 'justify-end' : ''}`}>
@@ -188,16 +190,7 @@ export function Dashboard() {
       case 'THOUGHT':
         return null; 
       case 'TOOL_CALL':
-        return (
-          <div key={action.id} className="flex gap-3 items-center my-3 pl-4 animate-fade-in-up">
-            <div className="bg-blue-50 dark:bg-blue-900/30 p-2 rounded-full border border-blue-100 dark:border-blue-800">
-              <Settings className="w-4 h-4 text-blue-500 dark:text-blue-400 animate-spin" />
-            </div>
-            <div className="text-sm text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2">
-              Agent action: <span className="font-mono bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded shadow-sm dark:shadow-none text-blue-700 dark:text-blue-400">{action.toolCall?.name || action.content}</span>
-            </div>
-          </div>
-        );
+        return null;
       case 'ERROR':
         return (
            <div key={action.id} className="flex gap-2 items-start my-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl shadow-sm dark:shadow-none animate-fade-in-up">
@@ -249,7 +242,7 @@ export function Dashboard() {
                   {topAction.benefit.title}
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                  {topAction.benefit.issuer} · {topAction.benefit.benefitAmount}
+                  {topAction.benefit.issuer} Â· {topAction.benefit.benefitAmount}
                 </p>
                 <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
                   <span className="text-xs text-slate-500">Deadline: {topAction.benefit.deadline}</span>
@@ -388,9 +381,9 @@ export function Dashboard() {
                 <h2 className="font-bold text-slate-900 dark:text-white leading-tight">Agent Workspace</h2>
                 <p className="text-xs font-medium text-emerald-600 flex items-center gap-1">
                   {session?.status === 'PLANNING' ? (
-                    <><Loader2 className="w-3 h-3 animate-spin" /> Planning…</>
+                    <><Loader2 className="w-3 h-3 animate-spin" /> Planningâ€¦</>
                   ) : session?.status === 'EXECUTING' ? (
-                    <><Loader2 className="w-3 h-3 animate-spin" /> Executing tools…</>
+                    <><Loader2 className="w-3 h-3 animate-spin" /> Executing toolsâ€¦</>
                   ) : (
                     <><CheckCircle2 className="w-3 h-3" /> Online &amp; Ready</>
                   )}
@@ -429,35 +422,46 @@ export function Dashboard() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-2 pb-4">
                 {session.history.map(renderAction)}
+                {session?.status === 'EXECUTING' && (
+                  <div className="flex gap-3 my-4 animate-fade-in-up">
+                    <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-sm max-w-[85%]">
+                      <div className="flex gap-1.5 items-center h-5">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div ref={chatEndRef} />
               </div>
             )}
           </div>
 
           {/* Input Area */}
-          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+          <div className="p-5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 z-10 relative shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] dark:shadow-none">
             <form onSubmit={handleSend} className="flex gap-3 relative">
               <div className="flex-1 relative">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask your case manager to check documents, find benefits, or track applications..."
+                  placeholder="Ask your case manager to check documents, find benefits..."
                   disabled={sending}
-                  className="w-full pl-4 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-white dark:placeholder-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-inner disabled:opacity-50 text-sm"
+                  className="w-full pl-4 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 dark:text-white dark:placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-inner disabled:opacity-50 text-sm"
                 />
               </div>
               <Button 
                 type="submit" 
                 disabled={sending || !input.trim()} 
-                className="rounded-xl px-5 bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 shadow-sm flex-shrink-0"
+                className="rounded-xl px-6 bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 shadow-md flex-shrink-0"
               >
                 {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
               </Button>
             </form>
-            <p className="text-[10px] text-center text-slate-400 mt-2">
+            <p className="text-[11px] text-center text-slate-500 dark:text-slate-400 mt-3 font-medium">
               BenefitBridge Agent autonomously inspects your real Document Vault and Firestore database.
             </p>
           </div>

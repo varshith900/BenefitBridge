@@ -176,6 +176,7 @@ export const CURATED_BENEFITS: Benefit[] = [
       applicationUrl: 'https://mahadbt.maharashtra.gov.in/',
       lastVerified: '2025-08-01',
       dataType: 'Official Government Portal',
+    },
   },
   {
     id: 'pm-yasasvi-scholarship',

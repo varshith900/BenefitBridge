@@ -1,4 +1,4 @@
-import { getUserProfile } from '../userService';
+﻿import { getUserProfile } from '../userService';
 import { CURATED_BENEFITS } from '../../data/benefits';
 import { evaluateEligibility } from '../eligibilityEngine';
 import {
@@ -13,7 +13,7 @@ import {
 import type { ApplicationStatus } from '../../types/application';
 import type { UserProfile } from '../../types/user';
 
-// ─── Tool Declarations for Gemini Function Calling ───────────────────────────
+// â”€â”€â”€ Tool Declarations for Gemini Function Calling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const TOOLS = [
   {
@@ -28,13 +28,17 @@ export const TOOLS = [
   },
   {
     name: 'check_eligibility',
-    description: "Evaluates the user's eligibility for a specific benefit scheme by its ID.",
+    description: "Evaluates the user's eligibility for one or multiple benefit schemes. Pass an array of benefit IDs to check them all at once.",
     parameters: {
       type: 'object',
       properties: {
-        benefitId: { type: 'string', description: 'The benefit ID to evaluate.' },
+        benefitIds: { 
+          type: 'array', 
+          items: { type: 'string' },
+          description: 'An array of benefit IDs to evaluate.' 
+        },
       },
-      required: ['benefitId'],
+      required: ['benefitIds'],
     },
   },
   {
@@ -177,7 +181,7 @@ export const TOOLS = [
   },
 ];
 
-// ─── Tool Executor ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Tool Executor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export async function executeTool(
   name: string,
@@ -216,14 +220,20 @@ export async function executeTool(
     }
 
     case 'check_eligibility': {
-      const benefit = CURATED_BENEFITS.find(b => b.id === args.benefitId);
-      if (!benefit) {
-        result = { error: 'Benefit not found.' };
-        break;
-      }
       const profile = (await getUserProfile(uid)) || fallbackProfile;
       const docs = await getUserDocuments(uid);
-      result = evaluateEligibility(profile, benefit, docs.map(d => d.type));
+      const docTypes = docs.map(d => d.type);
+      
+      const ids = args.benefitIds || (args.benefitId ? [args.benefitId] : []);
+      
+      const results = ids.map((id: string) => {
+        const benefit = CURATED_BENEFITS.find(b => b.id === id);
+        if (!benefit) return { benefitId: id, error: 'Benefit not found.' };
+        const evalResult = evaluateEligibility(profile, benefit, docTypes);
+        return evalResult;
+      });
+      
+      result = results;
       break;
     }
 

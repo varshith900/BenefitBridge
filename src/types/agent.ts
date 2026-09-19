@@ -39,6 +39,7 @@ export interface AgentAction {
   timestamp: number;
   type: 'THOUGHT' | 'TOOL_CALL' | 'MESSAGE' | 'PLAN_UPDATE' | 'STEP_UPDATE' | 'ERROR';
   content: string;
+  role?: 'USER' | 'AGENT';
   toolCall?: ToolCall;
 }
 

@@ -367,42 +367,42 @@ export function Landing() {
               <div className="bg-emerald-600/10 p-2 rounded-xl group-hover:bg-emerald-600/20 transition-colors">
                 <Logo className="w-6 h-6 text-emerald-600 dark:text-emerald-500" />
               </div>
-              <span className="text-2xl font-bold font-heading">BenefitBridge</span>
+              <span className="text-2xl font-bold font-heading text-slate-900 dark:text-white">BenefitBridge</span>
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-base leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed">
               The comprehensive benefits platform for Indian students and citizens. Secure, intelligent, and proactive.
             </p>
           </div>
           <div>
             <h4 className="font-bold mb-8 uppercase tracking-widest text-sm text-slate-900 dark:text-slate-100">Platform</h4>
             <ul className="space-y-5 text-base">
-              <li><a href="#how-it-works" className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Features</a></li>
-              <li><a href="#security" className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Security</a></li>
-              <li><a href="#workflow" className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">How it Works</a></li>
+              <li><a href="#features" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Features</a></li>
+              <li><a href="#security" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Security</a></li>
+              <li><a href="#workflow" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">How it Works</a></li>
             </ul>
           </div>
           <div>
             <h4 className="font-bold mb-8 uppercase tracking-widest text-sm text-slate-900 dark:text-slate-100">Company</h4>
             <ul className="space-y-5 text-base">
-              <li><a href="#" className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">About Us</a></li>
-              <li><a href="#" className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Contact Support</a></li>
+              <li><a href="/about" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">About Us</a></li>
+              <li><a href="mailto:jangilivarshith08@gmail.com" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Contact Support</a></li>
             </ul>
           </div>
           <div>
             <h4 className="font-bold mb-8 uppercase tracking-widest text-sm text-slate-900 dark:text-slate-100">Legal</h4>
             <ul className="space-y-5 text-base">
-              <li><a href="#" className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Privacy Policy</a></li>
-              <li><a href="#" className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Terms of Service</a></li>
+              <li><a href="/privacy" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Privacy Policy</a></li>
+              <li><a href="/terms" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-1 inline-block">Terms of Service</a></li>
             </ul>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+          <p className="text-slate-600 dark:text-slate-300 text-sm font-medium">
             &copy;{new Date().getFullYear()} BenefitBridge. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">All systems operational</span>
+            <span className="text-sm font-medium text-slate-600 dark:text-slate-300">All systems operational</span>
           </div>
         </div>
       </footer>

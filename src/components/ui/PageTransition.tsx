@@ -13,6 +13,9 @@ import { Applications } from '../../pages/Applications';
 import { ApplicationDetail } from '../../pages/ApplicationDetail';
 import { AuditLog } from '../../pages/AuditLog';
 import { NotFound } from '../../pages/NotFound';
+import { About } from '../../pages/About';
+import { Privacy } from '../../pages/Privacy';
+import { Terms } from '../../pages/Terms';
 import { ProtectedRoute } from '../ProtectedRoute';
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
@@ -40,6 +43,9 @@ export function AnimatedRoutes() {
         {/* Public Routes */}
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/signup" element={<PageTransition><SignUp /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
+        <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
 
         {/* Semi-Protected Route (Requires Auth, but onboarding is handled inside) */}
         <Route 

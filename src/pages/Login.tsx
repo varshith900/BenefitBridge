@@ -50,7 +50,11 @@ const { signInWithGoogle } = useAuth();
       await signInWithGoogle();
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Google');
+      if (err.code === 'auth/popup-blocked') {
+        setError('Popup blocked by your browser. Please click the popup blocker icon in your address bar, select "Always allow popups", and try again.');
+      } else {
+        setError(err.message || 'Failed to sign in with Google');
+      }
     } finally {
       setLoading(false);
     }
