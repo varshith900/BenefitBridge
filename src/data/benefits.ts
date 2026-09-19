@@ -176,66 +176,6 @@ export const CURATED_BENEFITS: Benefit[] = [
       applicationUrl: 'https://mahadbt.maharashtra.gov.in/',
       lastVerified: '2025-08-01',
       dataType: 'Official Government Portal',
-  },
-  {
-    id: 'pm-yasasvi-scholarship',
-    title: 'PM YASASVI Scholarship Scheme 2026',
-    issuer: 'Ministry of Social Justice and Empowerment, Government of India',
-    category: 'Education',
-    description:
-      'Active scholarship for students belonging to OBC, EBC and DNT categories studying in Class 9 and Class 11 in identified Top Schools. Provides up to ₹1,25,000 per annum.',
-    eligibilityCriteria: {
-      maxAnnualIncome: 250000,
-      educationLevels: ['9th', '11th', '12th', 'Undergraduate', 'Graduate', 'Postgraduate'],
-      employmentStatuses: ['Student'],
-      casteCriteria: ['OBC', 'EBC', 'DNT'],
-    },
-    deadline: '2026-10-15',
-    benefitAmount: '₹75,000 to ₹1,25,000 per annum',
-    requiredDocuments: [
-      'Aadhaar Card',
-      'Income Certificate',
-      'Caste Certificate (OBC/EBC/DNT)',
-      'Previous Year Marksheet',
-      'Bank Passbook Front Page',
-    ],
-    isRenewable: true,
-    provenance: {
-      sourceName: 'yet.nta.ac.in',
-      sourceUrl: 'https://yet.nta.ac.in/',
-      applicationUrl: 'https://yet.nta.ac.in/',
-      lastVerified: '2026-09-01',
-      dataType: 'Official Government Portal',
-    },
-  },
-  {
-    id: 'national-means-cum-merit-scholarship',
-    title: 'National Means cum Merit Scholarship (NMMS) 2026-27',
-    issuer: 'Department of School Education & Literacy',
-    category: 'Education',
-    description:
-      'Active scholarship to award meritorious students of economically weaker sections to arrest their drop out at class VIII and encourage them to continue study at secondary stage.',
-    eligibilityCriteria: {
-      maxAnnualIncome: 350000,
-      educationLevels: ['9th', '10th', '11th', '12th', 'Undergraduate', 'Graduate', 'Postgraduate'],
-      employmentStatuses: ['Student'],
-    },
-    deadline: '2026-11-30',
-    benefitAmount: '₹12,000 per annum (₹1,000 per month)',
-    requiredDocuments: [
-      'Aadhaar Card',
-      'Income Certificate',
-      'Class 7/8 Marksheet',
-      'Bank Passbook Front Page',
-      'Domicile Certificate'
-    ],
-    isRenewable: true,
-    provenance: {
-      sourceName: 'scholarships.gov.in',
-      sourceUrl: 'https://scholarships.gov.in/public/schemeX/central/DOSEL.htm',
-      applicationUrl: 'https://scholarships.gov.in/',
-      lastVerified: '2026-09-01',
-      dataType: 'Official Government Portal',
     },
   },
   {

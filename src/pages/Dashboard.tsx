@@ -227,28 +227,31 @@ export function Dashboard() {
           
           {/* Top Priority Action Card */}
           {topAction && (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
-                  Top Recommended Benefit
-                </span>
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                  {topAction.result.confidenceLevel} Match
-                </span>
+            <motion.div variants={itemVariants} className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent dark:from-emerald-900/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 group-hover:animate-pulse">
+                    Top Recommended Benefit
+                  </span>
+                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                    {topAction.result.confidenceLevel} Match
+                  </span>
+                </div>
+                <h3 className="font-bold text-base text-slate-900 dark:text-white mb-1 leading-snug group-hover:text-emerald-600 transition-colors">
+                  {topAction.benefit.title}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                  {topAction.benefit.issuer} Â· {topAction.benefit.benefitAmount}
+                </p>
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <span className="text-xs text-slate-500">Deadline: {topAction.benefit.deadline}</span>
+                  <Button size="sm" onClick={() => navigate('/opportunities')} className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs hover:-translate-y-0.5 transition-transform shadow-md hover:shadow-emerald-500/20">
+                    Review & Apply <ArrowRight className="w-3 h-3 ml-1" />
+                  </Button>
+                </div>
               </div>
-              <h3 className="font-bold text-base text-slate-900 dark:text-white mb-1 leading-snug">
-                {topAction.benefit.title}
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                {topAction.benefit.issuer} · {topAction.benefit.benefitAmount}
-              </p>
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-xs text-slate-500">Deadline: {topAction.benefit.deadline}</span>
-                <Button size="sm" onClick={() => navigate('/opportunities')} className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs">
-                  Review & Apply <ArrowRight className="w-3 h-3 ml-1" />
-                </Button>
-              </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Top Pending Task Card */}
